@@ -15,24 +15,24 @@ jobs:
         with:
           # Disabling shallow clone is recommended for improving relevancy of reporting
           fetch-depth: 0
-      - name: sonarqube-scan-pullrequest
-        uses: sonarsource/sonarqube-scan-action@master
-        if: ${{ github.base_ref == 'main' }}
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-        with:
-          args: >
-            -Dsonar.pullrequest.key=${{ github.event.number }}
-            -Dsonar.pullrequest.branch=${{ github.event.pull_request.head.ref }}
-            -Dsonar.pullrequest.base=${{ github.base_ref }}
-            -Dsonar.qualitygate.wait=true
-            -Dsonar.qualitygate.timeout=1000
+      # - name: sonarqube-scan-pullrequest
+      #   uses: sonarsource/sonarqube-scan-action@master
+      #   if: ${{ github.base_ref == 'main' }}
+      #   env:
+      #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      #     SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+      #   with:
+      #     args: >
+      #       -Dsonar.pullrequest.key=${{ github.event.number }}
+      #       -Dsonar.pullrequest.branch=${{ github.event.pull_request.head.ref }}
+      #       -Dsonar.pullrequest.base=${{ github.base_ref }}
+      #       -Dsonar.qualitygate.wait=true
+      #       -Dsonar.qualitygate.timeout=1000
 
   build:
     runs-on: ubuntu-latest
     outputs:
-      image_ref: ${{ vars.DOCKER_REGISTRY }}/${{ vars.DOCKER_USERNAME }}/boilerplate-react-native@${{ steps.build.outputs.image_digest }}
+      image_ref: ${{ vars.DOCKER_REGISTRY }}${{ vars.DOCKER_USERNAME }}/boilerplate-react-native@${{ steps.build.outputs.image_digest }}
     steps:
       - name: Checkout (app)
         uses: actions/checkout@v3
@@ -53,7 +53,7 @@ jobs:
         id: build
         uses: ./app/.github/actions/build
         with:
-          tags: ${{ vars.DOCKER_REGISTRY }}/${{ vars.DOCKER_USERNAME }}/boilerplate-react-native:${{ steps.extract_branch.outputs.branch_hash }}
+          tags: ${{ vars.DOCKER_REGISTRY }}${{ vars.DOCKER_USERNAME }}/boilerplate-react-native:${{ steps.extract_branch.outputs.branch_hash }}
           build_args: NODE_CONFIG_ENV=preview
           build_secrets: ''
           context: app/
